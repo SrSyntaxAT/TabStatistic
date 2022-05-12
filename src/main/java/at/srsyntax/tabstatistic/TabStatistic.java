@@ -1,22 +1,16 @@
 package at.srsyntax.tabstatistic;
 
 import org.bstats.bukkit.Metrics;
-import org.bukkit.Bukkit;
-import org.bukkit.Statistic;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.UUID;
 
 /*
  * MIT License
  *
- * Copyright (c) 2021 Marcel Haberl
+ * Copyright (c) 2021, 2022 Marcel Haberl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -38,26 +32,37 @@ import java.util.UUID;
  */
 public class TabStatistic extends JavaPlugin {
   
-  public static final String METADATA_KEY = "sts:sbt";
-  
-  private Scoreboard scoreboard;
-  private String suffix;
-  private Metrics metrics;
-  
+  public static final String METADATA_KEY;
+  private static final int BSTATS_ID, RESOURCE_ID;
+
+  static {
+    METADATA_KEY = "sts:sbt";
+
+    BSTATS_ID = 13458;
+    RESOURCE_ID = 98022;
+  }
+
   @Override
   public void onEnable() {
     try {
-      loadConfig();
-      scoreboard = getServer().getScoreboardManager().getNewScoreboard();
-      new PlayerListeners(this);
-      metrics = new Metrics(this, 13458);
+      checkVersion();
+      new PlayerListeners(this, new ScoreboardManager(getLogger(), loadSuffixFromConfig()));
+      new Metrics(this, BSTATS_ID);
     } catch (IOException exception) {
       getLogger().severe("Configuration could not be loaded!");
       exception.printStackTrace();
     }
   }
-  
-  private void loadConfig() throws IOException {
+
+  private void checkVersion() {
+    try {
+      final VersionCheck check = new VersionCheck(getDescription().getVersion(), RESOURCE_ID);
+      if (check.check()) return;
+      getLogger().warning("The plugin is no longer up to date, please update the plugin.");
+    } catch (Exception ignored) {}
+  }
+
+  private String loadSuffixFromConfig() throws IOException {
     if (!getDataFolder().exists())
       getDataFolder().mkdirs();
     
@@ -70,37 +75,6 @@ public class TabStatistic extends JavaPlugin {
       configuration.save(file);
     }
     
-    suffix = configuration.getString("suffix");
-  }
-  
-  public void updatePlayer(Player player) {
-    getTeam(player).setSuffix(replaceSuffix(player));
-    Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.setScoreboard(scoreboard));
-  }
-  
-  public String registerScoreboardTeam(Player player) {
-    final String name = UUID.randomUUID().toString().split("-")[4];
-    scoreboard.registerNewTeam(name).addEntry(player.getName());
-    return name;
-  }
-  
-  public Team getTeam(Player player) {
-    return scoreboard.getTeam(player.getMetadata(METADATA_KEY).get(0).asString());
-  }
-  
-  private String replaceSuffix(Player player) {
-    String result = suffix.replace("&", "§");
-    
-    for (Statistic statistic : Statistic.values()) {
-      try {
-        final String key = "<" + statistic.name() + ">";
-        if (result.contains(key))
-          result = result.replace(key, String.valueOf(player.getStatistic(statistic)));
-      } catch (Exception exception) {
-        this.getLogger().severe("Not supported statistic! (" + statistic.name() + ")");
-      }
-    }
-    
-    return result;
+    return configuration.getString("suffix");
   }
 }

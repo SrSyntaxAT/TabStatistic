@@ -1,7 +1,9 @@
 main: at.srsyntax.tabstatistic.TabStatistic
 name: TabStatistic
-version: 1.0
-api-version: 1.16
+version: ${version}
+api-version: 1.17
+
+softdepend: [PlaceholderAPI]
 
 author: SrSyntaxAT
 website: https://srsyntax.at/

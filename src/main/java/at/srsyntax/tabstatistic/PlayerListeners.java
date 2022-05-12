@@ -1,16 +1,16 @@
 package at.srsyntax.tabstatistic;
 
-import at.srsyntax.tabstatistic.TabStatistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.*;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 
 /*
  * MIT License
  *
- * Copyright (c) 2021 Marcel Haberl
+ * Copyright (c) 2021, 2022 Marcel Haberl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,29 +31,31 @@ import org.bukkit.metadata.FixedMetadataValue;
  * SOFTWARE.
  */
 public class PlayerListeners implements Listener {
+
+  private final Plugin plugin;
+  private final ScoreboardManager scoreboardManager;
   
-  private final TabStatistic plugin;
-  
-  public PlayerListeners(TabStatistic plugin) {
+  public PlayerListeners(Plugin plugin, ScoreboardManager scoreboardManager) {
     this.plugin = plugin;
+    this.scoreboardManager = scoreboardManager;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   }
   
   @EventHandler
   public void onPlayerJoinEvent(PlayerJoinEvent event) {
     final Player player = event.getPlayer();
-    final String teamName = plugin.registerScoreboardTeam(player);
+    final String teamName = scoreboardManager.registerScoreboardTeam(player);
     player.setMetadata(TabStatistic.METADATA_KEY, new FixedMetadataValue(plugin, teamName));
-    plugin.updatePlayer(player);
+    scoreboardManager.updatePlayer(player);
   }
   
   @EventHandler
   public void onPlayerQuitEvent(PlayerQuitEvent event) {
-    plugin.getTeam(event.getPlayer()).unregister();
+    scoreboardManager.getTeam(event.getPlayer()).unregister();
   }
   
   @EventHandler
   public void onPlayerStatisticIncrementEvent(PlayerStatisticIncrementEvent event) {
-    plugin.updatePlayer(event.getPlayer());
+    scoreboardManager.updatePlayer(event.getPlayer());
   }
 }
