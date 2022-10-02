@@ -7,3 +7,9 @@ softdepend: [PlaceholderAPI]
 
 author: SrSyntaxAT
 website: https://srsyntax.at/
+
+commands:
+  modifystatistic:
+    description: Modify the statistics of a player.
+    aliases:
+      - modifystats

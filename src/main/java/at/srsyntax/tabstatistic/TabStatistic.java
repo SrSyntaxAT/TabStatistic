@@ -1,5 +1,6 @@
 package at.srsyntax.tabstatistic;
 
+import at.srsyntax.tabstatistic.config.PluginConfig;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -46,8 +47,10 @@ public class TabStatistic extends JavaPlugin {
   public void onEnable() {
     try {
       checkVersion();
-      new PlayerListeners(this, new ScoreboardManager(getLogger(), loadSuffixFromConfig()));
+      final PluginConfig config = PluginConfig.loadConfig(getDataFolder());
+      new PlayerListeners(this, new ScoreboardManager(getLogger(), config.getSuffix()));
       new Metrics(this, BSTATS_ID);
+      getCommand("modifystatistic").setExecutor(new ModifyStatisticCommand(config.getMessages()));
     } catch (IOException exception) {
       getLogger().severe("Configuration could not be loaded!");
       exception.printStackTrace();
@@ -62,19 +65,4 @@ public class TabStatistic extends JavaPlugin {
     } catch (Exception ignored) {}
   }
 
-  private String loadSuffixFromConfig() throws IOException {
-    if (!getDataFolder().exists())
-      getDataFolder().mkdirs();
-    
-    final File file = new File(getDataFolder(), "config.yml");
-    final YamlConfiguration configuration = YamlConfiguration.loadConfiguration(file);
-    
-    if (!file.exists()) {
-      file.createNewFile();
-      configuration.set("suffix", "&e <MOB_KILLS>");
-      configuration.save(file);
-    }
-    
-    return configuration.getString("suffix");
-  }
 }
