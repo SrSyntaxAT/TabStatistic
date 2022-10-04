@@ -1,11 +1,10 @@
 package at.srsyntax.tabstatistic;
 
+import at.srsyntax.tabstatistic.command.ModifyStatisticCommand;
 import at.srsyntax.tabstatistic.config.PluginConfig;
 import org.bstats.bukkit.Metrics;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.io.IOException;
 
 /*

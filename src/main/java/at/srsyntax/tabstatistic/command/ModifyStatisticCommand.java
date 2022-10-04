@@ -1,4 +1,4 @@
-package at.srsyntax.tabstatistic;
+package at.srsyntax.tabstatistic.command;
 
 import at.srsyntax.tabstatistic.config.MessageConfig;
 import org.bukkit.Bukkit;
@@ -8,8 +8,12 @@ import org.bukkit.Statistic;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 /*
  * CONFIDENTIAL
@@ -31,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
  * INFORMATION DOES NOT CONVEY OR IMPLY ANY RIGHTS TO REPRODUCE, DISCLOSE OR DISTRIBUTE ITS CONTENTS, OR TO
  * MANUFACTURE, USE, OR SELL ANYTHING THAT IT  MAY DESCRIBE, IN WHOLE OR IN PART.
  */
-public class ModifyStatisticCommand implements CommandExecutor {
+public class ModifyStatisticCommand implements CommandExecutor, TabExecutor, ModifyTabCompleter {
 
     private final MessageConfig messages;
 
@@ -70,8 +74,14 @@ public class ModifyStatisticCommand implements CommandExecutor {
         return true;
     }
 
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        return onTabComplete(sender, args);
+    }
+
     private void checkRequirements(CommandSender sender, String[] args) {
-        if (!sender.hasPermission("tabstatistic.modify"))
+        if (!hasPermission(sender))
             throw new RuntimeException(messages.getNoPermission());
 
         if (args.length < 3)
