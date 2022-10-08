@@ -6,7 +6,7 @@
 
     <groupId>at.srsyntax</groupId>
     <artifactId>TabStatistic</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
 
     <developers>
         <developer>
