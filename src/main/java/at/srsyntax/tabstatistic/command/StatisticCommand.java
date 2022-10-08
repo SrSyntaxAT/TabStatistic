@@ -55,7 +55,7 @@ public abstract class StatisticCommand implements CommandExecutor, TabCompleter,
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         if (hasPermission(sender))
-            return tabComplete(sender, args, modify);
+            return tabComplete(args, modify);
         return new ArrayList<>();
     }
 

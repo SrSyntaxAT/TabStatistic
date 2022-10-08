@@ -3,7 +3,6 @@ package at.srsyntax.tabstatistic.command;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Statistic;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 
 import java.util.ArrayList;
@@ -34,14 +33,14 @@ import java.util.List;
  */
 public interface StatisticTabCompleter {
 
-    default List<String> tabComplete(CommandSender sender, String[] args, boolean modify) {
+    default List<String> tabComplete(String[] args, boolean modify) {
         final int qualifier = modify ? 4 : 3;
         if (args.length == 1)
             return getOnlinePlayers(args[0]);
         else if (args.length == 2)
             return getStatistics(args[1]);
         else if (args.length == qualifier)
-            return getQualifiers(args);
+            return getQualifiers(args, qualifier);
         return new ArrayList<>();
     }
 
@@ -65,12 +64,12 @@ public interface StatisticTabCompleter {
         return result;
     }
 
-    private List<String> getQualifiers(String[] args) {
+    private List<String> getQualifiers(String[] args, int length) {
         try {
             final Statistic statistic = Statistic.valueOf(args[1].toUpperCase());
             if (statistic.getType() == Statistic.Type.UNTYPED) return new ArrayList<>();
 
-            final String arg = args[3];
+            final String arg = args[length-1];
             if (statistic.getType() == Statistic.Type.ENTITY)
                 return getEntityTypes(arg);
             else
