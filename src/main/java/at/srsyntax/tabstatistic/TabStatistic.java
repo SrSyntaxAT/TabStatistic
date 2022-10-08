@@ -1,5 +1,6 @@
 package at.srsyntax.tabstatistic;
 
+import at.srsyntax.tabstatistic.command.GetStatisticCommand;
 import at.srsyntax.tabstatistic.command.ModifyStatisticCommand;
 import at.srsyntax.tabstatistic.config.PluginConfig;
 import at.srsyntax.tabstatistic.listeners.PlayerListeners;
@@ -58,6 +59,7 @@ public class TabStatistic extends JavaPlugin {
       new ServerLoadListener(this, scoreboardManager);
 
       getCommand("modifystatistic").setExecutor(new ModifyStatisticCommand(scoreboardManager, config.getMessages()));
+      getCommand("getstatistic").setExecutor(new GetStatisticCommand(config.getMessages()));
     } catch (IOException exception) {
       getLogger().severe("Configuration could not be loaded!");
       exception.printStackTrace();

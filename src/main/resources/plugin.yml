@@ -13,3 +13,7 @@ commands:
     description: Modify the statistics of a player.
     aliases:
       - modifystats
+  getstatistic:
+    description: Get the statistics of a player.
+    aliases:
+      - getstats

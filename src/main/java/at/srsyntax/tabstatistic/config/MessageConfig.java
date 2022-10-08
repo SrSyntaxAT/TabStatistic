@@ -25,14 +25,15 @@ package at.srsyntax.tabstatistic.config;
  */
 public class MessageConfig {
 
-    private final String noPermission, useage;
+    private final String noPermission, useageModify, useageGet;
     private final String playerNotFound, statisticNotFound, invalidValue;
     private final String needQualifier, entityTypeNotFound, materialNotFound;
-    private final String modified;
+    private final String modified, get;
 
-    public MessageConfig(String noPermission, String useage, String playerNotFound, String statisticNotFound, String invalidValue, String needQualifier, String entityTypeNotFound, String materialNotFound, String modified) {
+    public MessageConfig(String noPermission, String useageModify, String useageGet, String playerNotFound, String statisticNotFound, String invalidValue, String needQualifier, String entityTypeNotFound, String materialNotFound, String modified, String get) {
         this.noPermission = noPermission;
-        this.useage = useage;
+        this.useageModify = useageModify;
+        this.useageGet = useageGet;
         this.playerNotFound = playerNotFound;
         this.statisticNotFound = statisticNotFound;
         this.invalidValue = invalidValue;
@@ -40,14 +41,11 @@ public class MessageConfig {
         this.entityTypeNotFound = entityTypeNotFound;
         this.materialNotFound = materialNotFound;
         this.modified = modified;
+        this.get = get;
     }
 
     public String getNoPermission() {
         return noPermission;
-    }
-
-    public String getUseage() {
-        return useage;
     }
 
     public String getPlayerNotFound() {
@@ -76,5 +74,17 @@ public class MessageConfig {
 
     public String getModified() {
         return modified;
+    }
+
+    public String getUseageModify() {
+        return useageModify;
+    }
+
+    public String getUseageGet() {
+        return useageGet;
+    }
+
+    public String getGet() {
+        return get;
     }
 }

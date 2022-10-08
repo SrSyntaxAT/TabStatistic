@@ -39,14 +39,13 @@ import java.util.List;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public class ModifyStatisticCommand implements CommandExecutor, TabExecutor, ModifyTabCompleter {
+public class ModifyStatisticCommand extends StatisticCommand {
 
     private final ScoreboardManager scoreboardManager;
-    private final MessageConfig messages;
 
     public ModifyStatisticCommand(ScoreboardManager scoreboardManager, MessageConfig messages) {
+        super("tabstatistic.modify", true, messages);
         this.scoreboardManager = scoreboardManager;
-        this.messages = messages;
     }
 
     @Override
@@ -82,36 +81,12 @@ public class ModifyStatisticCommand implements CommandExecutor, TabExecutor, Mod
         return true;
     }
 
-    @Nullable
-    @Override
-    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        return onTabComplete(sender, args);
-    }
 
     private void checkRequirements(CommandSender sender, String[] args) {
         if (!hasPermission(sender))
             throw new RuntimeException(messages.getNoPermission());
         if (args.length < 3)
-            sendUseage();
-    }
-
-    private void sendUseage() {
-        throw new RuntimeException(messages.getUseage());
-    }
-
-    private OfflinePlayer getPlayer(String arg) {
-        final OfflinePlayer player = Bukkit.getOfflinePlayer(arg);
-        if (player == null || !player.hasPlayedBefore())
-            throw new RuntimeException(messages.getPlayerNotFound());
-        return player;
-    }
-
-    private Statistic getStatistic(String arg) {
-        try {
-            return Statistic.valueOf(arg.toUpperCase());
-        } catch (Exception exception) {
-            throw new RuntimeException(String.format(messages.getStatisticNotFound(), arg));
-        }
+            throw new RuntimeException(messages.getUseageModify());
     }
 
     private int getValue(String arg) {
@@ -119,22 +94,6 @@ public class ModifyStatisticCommand implements CommandExecutor, TabExecutor, Mod
             return Integer.parseInt(arg);
         } catch (Exception exception) {
             throw new RuntimeException(messages.getInvalidValue());
-        }
-    }
-
-    private EntityType getEntityType(String arg) {
-        try {
-            return EntityType.valueOf(arg.toUpperCase());
-        } catch (Exception exception) {
-            throw new RuntimeException();
-        }
-    }
-
-    private Material getMaterial(String arg) {
-        try {
-            return Material.valueOf(arg.toUpperCase());
-        } catch (Exception exception) {
-            throw new RuntimeException(messages.getMaterialNotFound());
         }
     }
 }

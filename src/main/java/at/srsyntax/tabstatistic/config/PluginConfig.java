@@ -49,8 +49,10 @@ public class PluginConfig {
             file.createNewFile();
             configuration.addDefault("suffix", "&e <MOB_KILLS>");
             configuration.addDefault("message.modified", "&aStatistics have been modified.");
+            configuration.addDefault("message.get", "&7The player has for &e§statistic &7the value &e§value&7.");
             configuration.addDefault("message.noPermission", "&cYou have no rights to do this.");
-            configuration.addDefault("message.useage", "&cUseage&8: &f/modifystatistic <player> <statistic> <value> <qualifier>");
+            configuration.addDefault("message.useage.modify", "&cUseage&8: &f/modifystatistic <player> <statistic> <value> [<qualifier>]");
+            configuration.addDefault("message.useage.get", "&cUseage&8: &f/getstatistic <player> <statistic> [<qualifier>]");
             configuration.addDefault("message.not.found.player", "&cPlayer not found.");
             configuration.addDefault("message.not.found.statistic", "&cStatistic not found.");
             configuration.addDefault("message.not.found.entityType", "&cEntityType not found.");
@@ -65,14 +67,16 @@ public class PluginConfig {
                 configuration.getString("suffix"),
                 new MessageConfig(
                         configuration.getString("message.noPermission"),
-                        configuration.getString("message.useage"),
+                        configuration.getString("message.useage.modify"),
+                        configuration.getString("message.useage.get"),
                         configuration.getString("message.not.found.player"),
                         configuration.getString("message.not.found.statistic"),
                         configuration.getString("message.invalidValue"),
                         configuration.getString("message.needQualifier"),
                         configuration.getString("message.not.found.entityType"),
                         configuration.getString("message.not.found.material"),
-                        configuration.getString("message.modified")
+                        configuration.getString("message.modified"),
+                        configuration.getString("message.get")
                 )
         );
     }
