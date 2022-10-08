@@ -1,8 +1,10 @@
 package at.srsyntax.tabstatistic;
 
+import at.srsyntax.tabstatistic.util.Replacer;
 import org.bukkit.Bukkit;
-import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -34,22 +36,28 @@ import java.util.logging.Logger;
  */
 public class ScoreboardManager {
 
-  private final Logger logger;
+  private final Plugin plugin;
   private final String suffix;
   private final Scoreboard scoreboard;
 
-  public ScoreboardManager(Logger logger, String suffix) {
-    this.logger = logger;
+  public ScoreboardManager(Plugin plugin, String suffix) {
+    this.plugin = plugin;
     this.suffix = suffix;
     this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
   }
 
   public void updatePlayer(Player player) {
-    getTeam(player).setSuffix(new Replacer(logger, player).replace(suffix));
+    getTeam(player).setSuffix(new Replacer(plugin.getLogger(), player).replace(suffix));
     Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.setScoreboard(scoreboard));
   }
 
-  public String registerScoreboardTeam(Player player) {
+  public void registerPlayer(Player player) {
+    final String teamName = registerScoreboardTeam(player);
+    player.setMetadata(TabStatistic.METADATA_KEY, new FixedMetadataValue(plugin, teamName));
+    updatePlayer(player);
+  }
+
+  private String registerScoreboardTeam(Player player) {
     final String name = UUID.randomUUID().toString().split("-")[4];
     scoreboard.registerNewTeam(name).addEntry(player.getName());
     return name;

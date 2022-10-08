@@ -1,5 +1,6 @@
 package at.srsyntax.tabstatistic.command;
 
+import at.srsyntax.tabstatistic.ScoreboardManager;
 import at.srsyntax.tabstatistic.config.MessageConfig;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -40,9 +41,11 @@ import java.util.List;
  */
 public class ModifyStatisticCommand implements CommandExecutor, TabExecutor, ModifyTabCompleter {
 
+    private final ScoreboardManager scoreboardManager;
     private final MessageConfig messages;
 
-    public ModifyStatisticCommand(MessageConfig messages) {
+    public ModifyStatisticCommand(ScoreboardManager scoreboardManager, MessageConfig messages) {
+        this.scoreboardManager = scoreboardManager;
         this.messages = messages;
     }
 
@@ -69,6 +72,8 @@ public class ModifyStatisticCommand implements CommandExecutor, TabExecutor, Mod
                 player.setStatistic(statistic, value);
             }
 
+            if (player.isOnline())
+                scoreboardManager.updatePlayer(player.getPlayer());
             sender.sendMessage(messages.getModified().replace("&", "§"));
         } catch (Exception exception) {
             sender.sendMessage(exception.getMessage().replace("&", "§"));

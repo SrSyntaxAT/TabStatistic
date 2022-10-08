@@ -64,15 +64,15 @@ public class PluginConfig {
         return new PluginConfig(
                 configuration.getString("suffix"),
                 new MessageConfig(
-                        configuration.getString("message.modified"),
                         configuration.getString("message.noPermission"),
                         configuration.getString("message.useage"),
                         configuration.getString("message.not.found.player"),
                         configuration.getString("message.not.found.statistic"),
+                        configuration.getString("message.invalidValue"),
+                        configuration.getString("message.needQualifier"),
                         configuration.getString("message.not.found.entityType"),
                         configuration.getString("message.not.found.material"),
-                        configuration.getString("message.needQualifier"),
-                        configuration.getString("message.invalidValue")
+                        configuration.getString("message.modified")
                 )
         );
     }

@@ -1,4 +1,4 @@
-package at.srsyntax.tabstatistic;
+package at.srsyntax.tabstatistic.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;

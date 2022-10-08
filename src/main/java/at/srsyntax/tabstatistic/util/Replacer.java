@@ -1,4 +1,4 @@
-package at.srsyntax.tabstatistic;
+package at.srsyntax.tabstatistic.util;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;

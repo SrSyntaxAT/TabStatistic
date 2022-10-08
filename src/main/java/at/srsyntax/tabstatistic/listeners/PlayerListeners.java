@@ -1,10 +1,11 @@
-package at.srsyntax.tabstatistic;
+package at.srsyntax.tabstatistic.listeners;
 
-import org.bukkit.entity.Player;
+import at.srsyntax.tabstatistic.ScoreboardManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.player.*;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerStatisticIncrementEvent;
 import org.bukkit.plugin.Plugin;
 
 /*
@@ -32,21 +33,16 @@ import org.bukkit.plugin.Plugin;
  */
 public class PlayerListeners implements Listener {
 
-  private final Plugin plugin;
   private final ScoreboardManager scoreboardManager;
   
   public PlayerListeners(Plugin plugin, ScoreboardManager scoreboardManager) {
-    this.plugin = plugin;
     this.scoreboardManager = scoreboardManager;
     plugin.getServer().getPluginManager().registerEvents(this, plugin);
   }
   
   @EventHandler
   public void onPlayerJoinEvent(PlayerJoinEvent event) {
-    final Player player = event.getPlayer();
-    final String teamName = scoreboardManager.registerScoreboardTeam(player);
-    player.setMetadata(TabStatistic.METADATA_KEY, new FixedMetadataValue(plugin, teamName));
-    scoreboardManager.updatePlayer(player);
+    scoreboardManager.registerPlayer(event.getPlayer());
   }
   
   @EventHandler

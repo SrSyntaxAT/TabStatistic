@@ -2,6 +2,9 @@ package at.srsyntax.tabstatistic;
 
 import at.srsyntax.tabstatistic.command.ModifyStatisticCommand;
 import at.srsyntax.tabstatistic.config.PluginConfig;
+import at.srsyntax.tabstatistic.listeners.PlayerListeners;
+import at.srsyntax.tabstatistic.listeners.ServerLoadListener;
+import at.srsyntax.tabstatistic.util.VersionCheck;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -45,11 +48,16 @@ public class TabStatistic extends JavaPlugin {
   @Override
   public void onEnable() {
     try {
-      checkVersion();
-      final PluginConfig config = PluginConfig.loadConfig(getDataFolder());
-      new PlayerListeners(this, new ScoreboardManager(getLogger(), config.getSuffix()));
       new Metrics(this, BSTATS_ID);
-      getCommand("modifystatistic").setExecutor(new ModifyStatisticCommand(config.getMessages()));
+      checkVersion();
+
+      final PluginConfig config = PluginConfig.loadConfig(getDataFolder());
+      final ScoreboardManager scoreboardManager = new ScoreboardManager(this, config.getSuffix());
+
+      new PlayerListeners(this, scoreboardManager);
+      new ServerLoadListener(this, scoreboardManager);
+
+      getCommand("modifystatistic").setExecutor(new ModifyStatisticCommand(scoreboardManager, config.getMessages()));
     } catch (IOException exception) {
       getLogger().severe("Configuration could not be loaded!");
       exception.printStackTrace();
