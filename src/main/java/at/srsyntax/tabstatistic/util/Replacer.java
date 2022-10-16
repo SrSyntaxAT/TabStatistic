@@ -1,8 +1,11 @@
 package at.srsyntax.tabstatistic.util;
 
+import at.srsyntax.tabstatistic.config.MessageConfig;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.Statistic;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import java.util.logging.Logger;
@@ -34,30 +37,52 @@ public class Replacer {
 
   private final Logger logger;
   private final Player player;
+  private final MessageConfig messages;
 
-  public Replacer(Logger logger, Player player) {
+  public Replacer(Logger logger, Player player, MessageConfig messages) {
     this.logger = logger;
     this.player = player;
+    this.messages = messages;
   }
 
   public String replace(String message) {
     return replaceWithPlaceholderAPI(replaceSuffix(message));
   }
 
-  private String replaceSuffix(String message) {
-    String result = message.replace("&", "§");
+  private String replaceSuffix(String result) {
+    final String[] splited = result.split(" ");
 
-    for (Statistic statistic : Statistic.values()) {
-      try {
-        final String key = "<" + statistic.name() + ">";
-        if (result.contains(key))
-          result = result.replace(key, String.valueOf(player.getStatistic(statistic)));
-      } catch (Exception exception) {
-        logger.severe("Not supported statistic! (" + statistic.name() + ")");
+    for (String element : splited) {
+      if (element.contains("%<")) {
+        final String statisticString = getStatisticFromElement(element);
+        try {
+          if (statisticString == null) continue;
+          final Statistic statistic = new StatisticUtil(messages).getStatistic(statisticString);
+          try {
+            result = new StatisticReplacer(logger, player, statistic, result, messages).replace();
+          } catch (Exception exception) {
+            logger.severe("Not supported statistic! (" + statistic.name() + ")");
+          }
+        } catch (Exception exception) {
+          logger.severe("Statistic '" + element + "' not found!");
+        }
       }
     }
 
-    return result;
+    return result.replace("&", "§");
+  }
+
+  private String getStatisticFromElement(String element) {
+    int indexEnd = element.indexOf(">");
+    if (indexEnd == -1) return null;
+
+    element = element.substring(element.indexOf("%<")+2, indexEnd);
+    if (element.contains("&"))
+      indexEnd = element.indexOf("&");
+    else
+      indexEnd = element.indexOf(">");
+
+    return element.substring(0, indexEnd == -1 ? element.length() : indexEnd);
   }
 
   private String replaceWithPlaceholderAPI(String message) {

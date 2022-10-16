@@ -47,7 +47,7 @@ public class PluginConfig {
 
         if (!file.exists()) {
             file.createNewFile();
-            configuration.addDefault("suffix", "&e <MOB_KILLS>");
+            configuration.addDefault("suffix", "&e %<MOB_KILLS>");
             configuration.addDefault("message.modified", "&aStatistics have been modified.");
             configuration.addDefault("message.get", "&7The player has for &e§statistic &7the value &e§value&7.");
             configuration.addDefault("message.noPermission", "&cYou have no rights to do this.");

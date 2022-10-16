@@ -1,5 +1,6 @@
 package at.srsyntax.tabstatistic;
 
+import at.srsyntax.tabstatistic.config.MessageConfig;
 import at.srsyntax.tabstatistic.util.Replacer;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -9,7 +10,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /*
  * MIT License
@@ -37,17 +37,20 @@ import java.util.logging.Logger;
 public class ScoreboardManager {
 
   private final Plugin plugin;
+  private final MessageConfig messageConfig;
+
   private final String suffix;
   private final Scoreboard scoreboard;
 
-  public ScoreboardManager(Plugin plugin, String suffix) {
+  public ScoreboardManager(Plugin plugin, MessageConfig messageConfig, String suffix) {
     this.plugin = plugin;
+    this.messageConfig = messageConfig;
     this.suffix = suffix;
     this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
   }
 
   public void updatePlayer(Player player) {
-    getTeam(player).setSuffix(new Replacer(plugin.getLogger(), player).replace(suffix));
+    getTeam(player).setSuffix(new Replacer(plugin.getLogger(), player, messageConfig).replace(suffix));
     Bukkit.getOnlinePlayers().forEach(onlinePlayer -> onlinePlayer.setScoreboard(scoreboard));
   }
 

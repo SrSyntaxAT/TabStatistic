@@ -47,13 +47,13 @@ public class TabStatistic extends JavaPlugin {
   }
 
   @Override
-  public void onEnable() {
+  public void  onEnable() {
     try {
       new Metrics(this, BSTATS_ID);
       checkVersion();
 
       final PluginConfig config = PluginConfig.loadConfig(getDataFolder());
-      final ScoreboardManager scoreboardManager = new ScoreboardManager(this, config.getSuffix());
+      final ScoreboardManager scoreboardManager = new ScoreboardManager(this, config.getMessages(), config.getSuffix());
 
       new PlayerListeners(this, scoreboardManager);
       new ServerLoadListener(this, scoreboardManager);

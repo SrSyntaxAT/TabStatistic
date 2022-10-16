@@ -1,6 +1,7 @@
 package at.srsyntax.tabstatistic.command;
 
 import at.srsyntax.tabstatistic.config.MessageConfig;
+import at.srsyntax.tabstatistic.util.StatisticUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -39,16 +40,15 @@ import java.util.List;
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
-public abstract class StatisticCommand implements CommandExecutor, TabCompleter, StatisticTabCompleter {
+public abstract class StatisticCommand extends StatisticUtil implements CommandExecutor, TabCompleter, StatisticTabCompleter {
 
     private final String permission;
     private final boolean modify;
-    protected final MessageConfig messages;
 
     public StatisticCommand(String permission, boolean modify, MessageConfig messages) {
+        super(messages);
         this.permission = permission;
         this.modify = modify;
-        this.messages = messages;
     }
 
     @Nullable
@@ -68,29 +68,5 @@ public abstract class StatisticCommand implements CommandExecutor, TabCompleter,
         if (player == null || !player.hasPlayedBefore())
             throw new RuntimeException(messages.getPlayerNotFound());
         return player;
-    }
-
-    protected Statistic getStatistic(String arg) {
-        try {
-            return Statistic.valueOf(arg.toUpperCase());
-        } catch (Exception exception) {
-            throw new RuntimeException(String.format(messages.getStatisticNotFound(), arg));
-        }
-    }
-
-    protected EntityType getEntityType(String arg) {
-        try {
-            return EntityType.valueOf(arg.toUpperCase());
-        } catch (Exception exception) {
-            throw new RuntimeException();
-        }
-    }
-
-    protected Material getMaterial(String arg) {
-        try {
-            return Material.valueOf(arg.toUpperCase());
-        } catch (Exception exception) {
-            throw new RuntimeException(messages.getMaterialNotFound());
-        }
     }
 }
