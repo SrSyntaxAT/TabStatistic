@@ -14,7 +14,7 @@ import java.io.IOException;
 /*
  * MIT License
  *
- * Copyright (c) 2021, 2022 Marcel Haberl
+ * Copyright (c) 2021, 2022, 2024 Marcel Haberl
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -35,6 +35,8 @@ import java.io.IOException;
  * SOFTWARE.
  */
 public class TabStatistic extends JavaPlugin {
+
+  private static TabStatistic plugin;
   
   public static final String METADATA_KEY;
   private static final int BSTATS_ID, RESOURCE_ID;
@@ -46,14 +48,17 @@ public class TabStatistic extends JavaPlugin {
     RESOURCE_ID = 98022;
   }
 
+  private ScoreboardManager scoreboardManager;
+
   @Override
   public void  onEnable() {
+    plugin = this;
     try {
       new Metrics(this, BSTATS_ID);
       checkVersion();
 
       final PluginConfig config = PluginConfig.loadConfig(getDataFolder());
-      final ScoreboardManager scoreboardManager = new ScoreboardManager(this, config.getMessages(), config.getSuffix());
+      scoreboardManager = new ScoreboardManager(this, config.getMessages(), config.getSuffix());
 
       new PlayerListeners(this, scoreboardManager);
       new ServerLoadListener(this, scoreboardManager);
@@ -71,7 +76,16 @@ public class TabStatistic extends JavaPlugin {
       final VersionCheck check = new VersionCheck(getDescription().getVersion(), RESOURCE_ID);
       if (check.check()) return;
       getLogger().warning("The plugin is no longer up to date, please update the plugin.");
-    } catch (Exception ignored) {}
+    } catch (IOException exception) {
+      getLogger().severe("The version check could not be performed successfully.");
+    }
   }
 
+  public static TabStatistic getPlugin() {
+    return plugin;
+  }
+
+  public ScoreboardManager getScoreboardManager() {
+    return scoreboardManager;
+  }
 }
